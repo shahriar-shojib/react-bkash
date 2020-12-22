@@ -23,7 +23,7 @@ function myCallBack(success) { //success true or false
 	createPaymentURL: "https://your-payment-backend-url/createPayment"
 	executePaymentURL: "http://your-payment-backend-url/createPayment"
 	callBack={myCallBack}
-	additionalHeaders: {Authorization: 'Bearer yourServerTokenMaybe?'};
+	additionalHeaders: {Authorization: 'Bearer yourServerTokenMaybe?'}
  />
 ```
 
