@@ -1,0 +1,43 @@
+{
+	"name": "react-bkash",
+	"version": "1.0.0",
+	"description": "A React Component for Accepting Bkash Payments using React",
+	"author": "Shahriar Shojib <shahriar_shojib@hotmail.com>",
+	"license": "MIT",
+	"repository": "shahriar-shojib/React-bKash",
+	"main": "dist/index.js",
+	"engines": {
+		"node": ">=8",
+		"npm": ">=5"
+	},
+	"scripts": {
+		"build": "rollup -c"
+	},
+	"dependencies": {},
+	"peerDependencies": {
+		"react": ">= 16.8.0 < 2",
+		"react-dom": ">= 16.8.0 < 2"
+	},
+	"devDependencies": {
+		"@types/react": "^16.3.13",
+		"@types/react-dom": "^16.0.5",
+		"babel-core": "^6.26.3",
+		"babel-runtime": "^6.26.0",
+		"react": "^16.12.0",
+		"react-dom": "^16.12.0",
+		"rollup": "^1.29.0",
+		"rollup-plugin-typescript2": "^0.25.3",
+		"typescript": "^2.8.3"
+	},
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"react",
+		"typescript",
+		"npm",
+		"bkash",
+		"bkash-pgw",
+		"bkash-react"
+	]
+}
