@@ -12,7 +12,8 @@
 		"npm": ">=5"
 	},
 	"scripts": {
-		"build": "rollup -c"
+		"build": "rollup -c",
+		"ci": "yarn --frozen-lockfile"
 	},
 	"peerDependencies": {
 		"react": ">= 16.8.0 < 2",
