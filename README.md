@@ -1,5 +1,7 @@
 # React-bKash
 
+![Publish to NPM](https://github.com/shahriar-shojib/React-bKash/workflows/Publish%20to%20NPM%20and%20Github%20Packages/badge.svg)
+
 React component for accepting bkash payments! [painlessly]
 
 ---
