@@ -6,6 +6,7 @@
 	"license": "MIT",
 	"repository": "shahriar-shojib/React-bKash",
 	"main": "dist/index.js",
+	"types": "./dist/index.d.ts",
 	"engines": {
 		"node": ">=8",
 		"npm": ">=5"
@@ -13,7 +14,6 @@
 	"scripts": {
 		"build": "rollup -c"
 	},
-	"dependencies": {},
 	"peerDependencies": {
 		"react": ">= 16.8.0 < 2",
 		"react-dom": ">= 16.8.0 < 2"

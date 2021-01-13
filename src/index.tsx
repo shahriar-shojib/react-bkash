@@ -8,7 +8,7 @@ const jqueryURL = 'https://code.jquery.com/jquery-3.3.1.min.js';
 const bkashURL = process.env.BKASH_URL || 'https://scripts.sandbox.bka.sh/versions/1.1.0-beta/checkout/bKash-checkout-sandbox.js';
 
 function myCallBack(success: boolean, paymentInfo?: IExecutePaymentResponse) {
-	success ? alert(paymentInfo?.trxID) : alert('payment failed');
+	success ? alert(JSON.stringify(paymentInfo)) : alert('payment failed');
 	window.location.reload();
 }
 
