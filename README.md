@@ -13,8 +13,14 @@ React component for accepting bkash payments! [painlessly]
 ```jsx
 import BkashButton from 'react-bkash';
 
-function myCallBack(success) { //success true or false
-	success ? alert('payment successful') : alert('payment failed');
+function myCallBack(success, paymentData) { //success true or false
+	if(success){
+		/*
+		* do something with `paymentData`
+		*/
+	} else {
+		alert('payment failed');
+	}
 	window.location.reload();
 }
 <BkashButton

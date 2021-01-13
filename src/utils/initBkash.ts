@@ -12,7 +12,7 @@ export const initBkash = (
 	amount: string | number,
 	createPaymentURL: string,
 	executePaymentURL: string,
-	callBack: Function,
+	callBack: (success: boolean, paymentInfo?: IExecutePaymentResponse) => any,
 	additionalHeaders: Record<string, string> = {}
 ) => {
 	const config = {
@@ -35,7 +35,7 @@ export const initBkash = (
 		executeRequestOnAuthorization: async function () {
 			const data = await post<IExecutePaymentResponse>(executePaymentURL, { paymentID: window.paymentID }, additionalHeaders);
 			if (data && data.paymentID !== null) {
-				callBack(true);
+				callBack(true, data);
 			} else {
 				bKash.execute().onError();
 			}

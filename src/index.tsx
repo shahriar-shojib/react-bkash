@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { createBkashButton, initBkash, triggerBkash } from './utils/initBkash';
-import { IProps } from './utils/interfaces';
+import { IExecutePaymentResponse, IProps } from './utils/interfaces';
 import { loadScript } from './utils/loadScript';
 
 const jqueryURL = 'https://code.jquery.com/jquery-3.3.1.min.js';
 const bkashURL = process.env.BKASH_URL || 'https://scripts.sandbox.bka.sh/versions/1.1.0-beta/checkout/bKash-checkout-sandbox.js';
 
-function myCallBack(success: boolean) {
-	success ? alert('payment successful') : alert('payment failed');
+function myCallBack(success: boolean, paymentInfo?: IExecutePaymentResponse) {
+	success ? alert(paymentInfo?.trxID) : alert('payment failed');
 	window.location.reload();
 }
 
