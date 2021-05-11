@@ -29,7 +29,7 @@ function myCallBack(success, paymentData) { //success true or false
 	btnText="Pay With Bkash"
 	amount ="100.20"
 	createPaymentURL: "https://your-payment-backend-url/createPayment"
-	executePaymentURL: "http://your-payment-backend-url/createPayment"
+	executePaymentURL: "http://your-payment-backend-url/executePayment"
 	callBack={myCallBack}
 	additionalHeaders={{Authorization: 'Bearer yourServerTokenMaybe?'}}
  />
