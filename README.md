@@ -15,11 +15,12 @@ React component for accepting bkash payments! [painlessly]
 ```jsx
 import BkashButton from 'react-bkash';
 
-function myCallBack(success, paymentData) { //success true or false
-	if(success){
+function myCallBack(success, paymentData) {
+	//success true or false
+	if (success) {
 		/*
-		* do something with `paymentData`
-		*/
+		 * do something with `paymentData`
+		 */
 	} else {
 		alert('payment failed');
 	}
@@ -27,12 +28,12 @@ function myCallBack(success, paymentData) { //success true or false
 }
 <BkashButton
 	btnText="Pay With Bkash"
-	amount ="100.20"
-	createPaymentURL: "https://your-payment-backend-url/createPayment"
-	executePaymentURL: "http://your-payment-backend-url/executePayment"
+	amount="100.20"
+	createPaymentURL="https://your-payment-backend-url/createPayment"
+	executePaymentURL="http://your-payment-backend-url/executePayment"
 	callBack={myCallBack}
-	additionalHeaders={{Authorization: 'Bearer yourServerTokenMaybe?'}}
- />
+	additionalHeaders={{ Authorization: 'Bearer yourServerTokenMaybe?' }}
+/>;
 ```
 
 -   Profit
