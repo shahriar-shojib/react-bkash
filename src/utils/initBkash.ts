@@ -12,7 +12,8 @@ export const initBkash = (
 	amount: string | number,
 	createPaymentURL: string,
 	executePaymentURL: string,
-	callBack: (success: boolean, paymentInfo?: IExecutePaymentResponse) => any,
+	onSuccess: (data: IExecutePaymentResponse) => void,
+	onClose: () => void,
 	additionalHeaders: Record<string, string> = {}
 ) => {
 	const config = {
@@ -35,7 +36,7 @@ export const initBkash = (
 		executeRequestOnAuthorization: async function () {
 			const data = await post<IExecutePaymentResponse>(executePaymentURL, { paymentID: window.paymentID }, additionalHeaders);
 			if (data && data.paymentID !== null) {
-				callBack(true, data);
+				onSuccess(data);
 			} else {
 				bKash.execute().onError();
 			}
@@ -52,7 +53,7 @@ export const createBkashButton = (): void => {
 	document.querySelector('body').appendChild(button);
 };
 export const triggerBkash = (): void => {
-	const createdButton = document.querySelector('#bKash_button') as HTMLElement;
+	const createdButton = document.querySelector('#bKash_button')! as HTMLElement;
 	createdButton.click();
 	createdButton.remove();
 };

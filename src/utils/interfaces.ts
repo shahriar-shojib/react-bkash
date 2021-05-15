@@ -28,11 +28,16 @@ export interface IExecutePaymentResponse {
 	merchantInvoiceNumber: string;
 }
 
-export interface IProps {
-	btnText: string;
+export interface IComponentConfig {
 	amount: string | number;
 	createPaymentURL: string;
 	executePaymentURL: string;
-	callBack(): unknown;
-	additionalHeaders: Record<string, string>;
+	additionalHeaders?: Record<string, string>;
+	bkashScriptURL: string;
+}
+
+export interface IProps {
+	onSuccess: (data: IExecutePaymentResponse) => void;
+	onClose: () => void;
+	config: IComponentConfig;
 }
