@@ -1,35 +1,32 @@
-import React, { ReactElement } from 'react';
-import { useEffect, useState, FC, PropsWithChildren, cloneElement } from 'react';
-import { createBkashButton, initBkash, triggerBkash } from './utils/initBkash';
-import { IProps } from './utils/interfaces';
-import { loadScript } from './utils/loadScript';
+import React, { ReactElement, useEffect, useState, FC, cloneElement } from 'react';
+import { initBkash, triggerBkash, loadDeps, IProps } from './utils';
 
-const BkashButton: FC<PropsWithChildren<IProps>> = ({
-	onSuccess,
-	onClose,
-	children,
-	config: { amount, bkashScriptURL, createPaymentURL, executePaymentURL, additionalHeaders },
-}): JSX.Element => {
-	const [isLoaded, setIsLoaded] = useState(false);
+const BkashButton: FC<IProps> = (props): JSX.Element | null => {
+	const [isLoaded, setLoaded] = useState(false);
+	const {
+		onSuccess,
+		onClose,
+		children,
+		config: { amount, bkashScriptURL, createPaymentURL, executePaymentURL, additionalHeaders },
+	} = props;
+
 	useEffect(() => {
 		async function main() {
 			if (!isLoaded) {
-				await loadScript('https://code.jquery.com/jquery-3.3.1.min.js', 'jquery');
-				createBkashButton();
-				await loadScript(bkashScriptURL, 'bkashScript');
+				await loadDeps(bkashScriptURL);
 				initBkash(amount, createPaymentURL, executePaymentURL, onSuccess, onClose, additionalHeaders);
-				setIsLoaded(true);
+				setLoaded(true);
 			}
 		}
 		main();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	if (isLoaded) {
 		return <div onClick={triggerBkash}>{cloneElement(children as ReactElement, { onClick: triggerBkash })}</div>;
 	}
 
-	return <></>;
+	return null;
 };
 
 export default BkashButton;
+export * from './utils';

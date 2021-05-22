@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export interface IPaymentRequest extends Record<string, string> {
 	amount: string;
 	intent: 'sale';
@@ -36,8 +38,11 @@ export interface IComponentConfig {
 	bkashScriptURL: string;
 }
 
+export type SuccessFunction = (data: IExecutePaymentResponse) => void;
+
 export interface IProps {
-	onSuccess: (data: IExecutePaymentResponse) => void;
+	children: ReactNode;
+	onSuccess: SuccessFunction;
 	onClose: () => void;
 	config: IComponentConfig;
 }
