@@ -14,6 +14,6 @@ export default {
 			strict: false,
 		},
 	],
-	plugins: [typescript({ check: false }), terser.terser({ ecma: 5, compress: true })],
+	plugins: [typescript({ check: false })],
 	external: ['react', 'react-dom'],
 };

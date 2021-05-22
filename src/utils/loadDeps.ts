@@ -7,7 +7,7 @@ export const loadDeps = async (bkashScriptURL: string) => {
 	}
 	createBkashButton();
 
-	if (!document.querySelector('#jquery')) {
+	if (!document.querySelector('#bkashScript')) {
 		await loadScript(bkashScriptURL, 'bkashScript');
 	}
 };
