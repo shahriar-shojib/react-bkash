@@ -10,33 +10,53 @@ React component for accepting bkash payments! [painlessly]
 
 -   Run `npm install react-bkash`
 
--   open your react component and add the following code
+-   open your react component and add the following code `TypeScript`
 
 ```jsx
-import BkashButton from 'react-bkash';
+import BkashButton, { IComponentConfig, SuccessFunction } from 'react-bkash';
+import React, { CSSProperties, FC } from 'react';
 
-function myCallBack(success, paymentData) {
-	//success true or false
-	if (success) {
-		/*
-		 * do something with `paymentData`
-		 */
-	} else {
-		alert('payment failed');
-	}
-	window.location.reload();
-}
-<BkashButton
-	btnText="Pay With Bkash"
-	amount="100.20"
-	createPaymentURL="https://your-payment-backend-url/createPayment"
-	executePaymentURL="http://your-payment-backend-url/executePayment"
-	callBack={myCallBack}
-	additionalHeaders={{ Authorization: 'Bearer yourServerTokenMaybe?' }}
-/>;
+const Example: FC = () => {
+	const handleSuccess: SuccessFunction = (data) => {
+		console.log(data, 'Payment successful');
+	};
+
+	const handleClose = () => {
+		console.log('bKash popup closed');
+	};
+
+	const config: IComponentConfig = {
+		amount: '100',
+		bkashScriptURL: 'https://sandbox.bka.sh/script.js',
+		createPaymentURL: 'https://YOUR-PAYMENT-BACKEND-URL/createPayment',
+		executePaymentURL: 'http://YOUR-PAYMENT-BACKEND-URL/executePayment',
+		additionalHeaders: {
+			Authorization: 'Bearer YOUR_TOKEN',
+		},
+	};
+
+	return (
+		<BkashButton onSuccess={handleSuccess} onClose={handleClose} config={config}>
+			<button style={buttonStyle}>Pay with bKash</button>
+		</BkashButton>
+	);
+};
+
+export default Example;
+
+const buttonStyle: CSSProperties = {
+	minWidth: '170px',
+	height: '38px',
+	fontSize: '0.875rem',
+	fontWeight: 500,
+	lineHeight: 1.5,
+	color: '#fff',
+	padding: '0.375rem 0.75rem',
+	textTransform: 'uppercase',
+	backgroundColor: '#e2136e',
+	border: '1px solid #e2136e',
+};
 ```
-
--   Profit
 
 ---
 
@@ -58,3 +78,7 @@ function myCallBack(success, paymentData) {
 ### Author
 
 [Shahriar Shojib](https://github.com/shahriar-shojib)
+
+### Contributors
+
+[Sonjoy Datta](https://github.com/sonjoydatta)

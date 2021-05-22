@@ -46,3 +46,6 @@ typings/
 
 # generate output
 dist
+
+# components
+Example.tsx
