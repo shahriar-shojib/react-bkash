@@ -1,6 +1,6 @@
 {
 	"name": "react-bkash",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "A React Component for Accepting Bkash Payments using React",
 	"author": "Shahriar Shojib <shahriar_shojib@hotmail.com>",
 	"license": "MIT",
