@@ -22,7 +22,7 @@ const BkashButton: FC<IProps> = (props): JSX.Element | null => {
 	}, []);
 
 	if (isLoaded) {
-		return <div onClick={triggerBkash}>{cloneElement(children as ReactElement, { onClick: triggerBkash })}</div>;
+		return <div>{cloneElement(children as ReactElement, { onClick: triggerBkash })}</div>;
 	}
 
 	return null;
