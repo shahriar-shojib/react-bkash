@@ -21,6 +21,7 @@ export const initBkash = (
 		paymentRequest: {
 			amount: String(amount),
 			intent: 'sale',
+			currency:'BDT'
 		},
 
 		createRequest: async function (request: IPaymentRequest) {
