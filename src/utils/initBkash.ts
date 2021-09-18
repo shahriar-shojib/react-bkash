@@ -43,7 +43,7 @@ export const initBkash = (
 			}
 		},
 
-		onClose: () => callBack(true),
+		onClose: function () { return onClose() },
 	};
 	bKash.init(config);
 };
