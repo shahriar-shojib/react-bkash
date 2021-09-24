@@ -21,6 +21,7 @@ export const initBkash = (
 		paymentRequest: {
 			amount: String(amount),
 			intent: 'sale',
+			currency:'BDT'
 		},
 
 		createRequest: async function (request: IPaymentRequest) {
@@ -42,7 +43,7 @@ export const initBkash = (
 			}
 		},
 
-		onClose: () => callBack(false),
+		onClose: function () { return onClose() },
 	};
 	bKash.init(config);
 };
