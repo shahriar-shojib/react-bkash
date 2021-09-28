@@ -1,10 +1,10 @@
 {
 	"name": "react-bkash",
-	"version": "1.0.7",
+	"version": "1.1.1",
 	"description": "A React Component for Accepting Bkash Payments using React",
 	"author": "Shahriar Shojib <shahriar_shojib@hotmail.com>",
 	"license": "MIT",
-	"repository": "shahriar-shojib/React-bKash",
+	"repository": "github.com/shahriar-shojib/React-bKash.git",
 	"main": "dist/index.js",
 	"types": "./dist/index.d.ts",
 	"engines": {
@@ -12,23 +12,24 @@
 		"npm": ">=5"
 	},
 	"scripts": {
-		"build": "rollup -c",
-		"ci": "yarn --frozen-lockfile"
+		"build": "tsc",
+		"ci": "yarn --frozen-lockfile",
+		"check:format": "prettier -c .",
+		"check:lint": "eslint .",
+		"format": "prettier -c -w .",
+		"lint:fix": "eslint --fix ."
 	},
 	"devDependencies": {
-		"@types/react": "^17.0.5",
-		"@typescript-eslint/eslint-plugin": "^4.24.0",
-		"@typescript-eslint/parser": "^4.24.0",
-		"babel-core": "^6.26.3",
-		"babel-runtime": "^6.26.0",
-		"eslint": "^7.27.0",
-		"eslint-plugin-react": "^7.23.2",
+		"@types/react": "^17.0.24",
+		"@typescript-eslint/eslint-plugin": "^4.32.0",
+		"@typescript-eslint/parser": "^4.32.0",
+		"eslint": "^7.32.0",
+		"eslint-plugin-react": "^7.26.0",
+		"eslint-plugin-react-hooks": "^4.2.0",
+		"prettier": "^2.4.1",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
-		"rollup": "^2.48.0",
-		"rollup-plugin-terser": "^7.0.2",
-		"rollup-plugin-typescript2": "^0.30.0",
-		"typescript": "^4.2.4"
+		"typescript": "^4.4.3"
 	},
 	"files": [
 		"dist"
