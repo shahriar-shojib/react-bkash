@@ -14,7 +14,7 @@ const BkashButton: FC<IProps> = (props): JSX.Element | null => {
 		async function main() {
 			if (!isLoaded) {
 				await loadDeps(bkashScriptURL);
-				initBkash(amount, createPaymentURL, executePaymentURL, onSuccess, onClose, additionalHeaders);
+				initBkash({ amount, createPaymentURL, executePaymentURL, onSuccess, onClose, additionalHeaders });
 				setLoaded(true);
 			}
 		}
