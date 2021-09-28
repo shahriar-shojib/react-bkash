@@ -1,4 +1,4 @@
-name: Linting Check
+name: Build Check
 
 on:
     pull_request:
