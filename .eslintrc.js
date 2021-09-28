@@ -12,11 +12,17 @@ module.exports = {
 		ecmaVersion: 12,
 		sourceType: 'module',
 	},
-	plugins: ['react', '@typescript-eslint'],
+	plugins: ['react', '@typescript-eslint', 'react-hooks'],
 	rules: {
 		indent: ['error', 'tab'],
-		'linebreak-style': ['error', 'crlf'],
 		quotes: ['error', 'single'],
 		semi: ['error', 'always'],
+		'react-hooks/rules-of-hooks': 'error',
+		'react-hooks/exhaustive-deps': 'error',
+	},
+	settings: {
+		react: {
+			version: 'detect',
+		},
 	},
 };

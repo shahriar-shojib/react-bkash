@@ -19,7 +19,7 @@ const BkashButton: FC<IProps> = (props): JSX.Element | null => {
 			}
 		}
 		main();
-	}, []);
+	}, [additionalHeaders, amount, bkashScriptURL, createPaymentURL, executePaymentURL, isLoaded, onClose, onSuccess]);
 
 	if (isLoaded) {
 		return <div>{cloneElement(children as ReactElement, { onClick: triggerBkash })}</div>;

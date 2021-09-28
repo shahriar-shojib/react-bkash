@@ -9,7 +9,7 @@ interface BkashInitOptions {
 	additionalHeaders?: Record<string, string>;
 }
 
-export const initBkash = (options: BkashInitOptions) => {
+export const initBkash = (options: BkashInitOptions): void => {
 	const { additionalHeaders = {}, amount, createPaymentURL, executePaymentURL, onClose, onSuccess } = options;
 	const config = {
 		paymentMode: 'checkout',
@@ -30,7 +30,11 @@ export const initBkash = (options: BkashInitOptions) => {
 		},
 
 		executeRequestOnAuthorization: async () => {
-			const data = await post<IExecutePaymentResponse>(executePaymentURL, { paymentID: window.paymentID }, additionalHeaders);
+			const data = await post<IExecutePaymentResponse>(
+				executePaymentURL,
+				{ paymentID: window.paymentID },
+				additionalHeaders
+			);
 			if (data && data.paymentID !== null) {
 				onSuccess(data);
 			} else {
@@ -65,7 +69,11 @@ export const triggerBkash = (): void => {
 	throw new Error('Could not find bkash button on document');
 };
 
-async function post<T>(url: string, body: Record<string, string>, additionalHeaders: Record<string, string> = {}): Promise<T> {
+async function post<T>(
+	url: string,
+	body: Record<string, string>,
+	additionalHeaders: Record<string, string> = {}
+): Promise<T> {
 	return await fetch(url, {
 		headers: {
 			'content-type': 'application/json',
