@@ -1,11 +1,9 @@
-import { ReactNode } from 'react';
-
-export interface IPaymentRequest extends Record<string, string> {
+export type IPaymentRequest = {
 	amount: string;
 	intent: 'sale';
-}
+};
 
-export interface ICreatePaymentResponse {
+export type ICreatePaymentResponse = {
 	paymentID: string;
 	createTime: string;
 	orgLogo: string;
@@ -16,9 +14,9 @@ export interface ICreatePaymentResponse {
 	intent: string;
 	merchantInvoiceNumber: string;
 	//need to implement error cases here
-}
+};
 
-export interface IExecutePaymentResponse {
+export type ExecutePaymentResponse = {
 	paymentID: string;
 	createTime: string;
 	updateTime: string;
@@ -28,21 +26,14 @@ export interface IExecutePaymentResponse {
 	currency: string;
 	intent: string;
 	merchantInvoiceNumber: string;
-}
+};
 
-export interface IComponentConfig {
+export type BkashComponentConfig = {
 	amount: string | number;
 	createPaymentURL: string;
 	executePaymentURL: string;
 	additionalHeaders?: Record<string, string>;
 	bkashScriptURL: string;
-}
+};
 
-export type SuccessFunction = (data: IExecutePaymentResponse) => void;
-
-export interface IProps {
-	children: ReactNode;
-	onSuccess: SuccessFunction;
-	onClose: () => void;
-	config: IComponentConfig;
-}
+export type BkashSuccessFunction = (data: ExecutePaymentResponse) => void;
