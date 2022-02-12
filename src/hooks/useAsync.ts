@@ -38,17 +38,17 @@ export const useAsync = <T extends AnyPromiseFunction>(cb: T): UseAsyncReturnTyp
 		setLoading(true);
 		try {
 			const result = await cbRef.current();
-			if (!isMounted) return;
+			if (!isMounted.current) return;
 			setData(result);
 		} catch (error) {
-			if (!isMounted) return;
+			if (!isMounted.current) return;
 			if (error instanceof Error) {
 				setError(error);
 				return;
 			}
 			setError(new Error((error as Error)?.message || 'Unknown error'));
 		} finally {
-			if (isMounted) {
+			if (isMounted.current) {
 				setLoading(false);
 			}
 		}
