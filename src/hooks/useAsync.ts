@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { DependencyList, useCallback, useEffect, useRef, useState } from 'react';
 
 export const useIsMounted = (): React.MutableRefObject<boolean> => {
 	const isMounted = useRef(true);
@@ -24,26 +24,30 @@ type UseAsyncReturnType<T extends AnyPromiseFunction> = {
 	data: Awaited<T> | null;
 	call: (...args: Parameters<T>) => void;
 };
-export const useAsync = <T extends AnyPromiseFunction>(cb: T, delayCall = false): UseAsyncReturnType<T> => {
+
+export const useAsync = <T extends AnyPromiseFunction>(
+	cb: T,
+	deps: DependencyList = [],
+	delayCall = false
+): UseAsyncReturnType<T> => {
 	const [data, setData] = useState<Awaited<T> | null>(null);
 	const [loading, setLoading] = useState<true | false>(false);
 	const [error, setError] = useState<Error | null>(null);
 
-	const cbRef = useRef(cb);
-	cbRef.current = cb;
-
-	const isMounted = useIsMounted();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const callBack = useCallback((args: any[]) => cb(args), [...deps, cb]);
+	const isMountedRef = useIsMounted();
 
 	const fetchData = useCallback(
 		async (...args: any[]) => {
 			setLoading(true);
 			try {
-				const result = await cbRef.current(args);
-				if (!isMounted.current) return;
+				const result = await callBack(args);
+				if (!isMountedRef.current) return;
 
 				setData(result);
 			} catch (error) {
-				if (!isMounted.current) return;
+				if (!isMountedRef.current) return;
 
 				if (error instanceof Error) {
 					setError(error);
@@ -52,12 +56,12 @@ export const useAsync = <T extends AnyPromiseFunction>(cb: T, delayCall = false)
 
 				setError(new Error((error as Error)?.message || 'Unknown error'));
 			} finally {
-				if (isMounted.current) {
+				if (isMountedRef.current) {
 					setLoading(false);
 				}
 			}
 		},
-		[isMounted]
+		[callBack, isMountedRef]
 	);
 
 	const fetchDataRef = useRef(fetchData);

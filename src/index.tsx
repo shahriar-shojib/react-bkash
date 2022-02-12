@@ -58,6 +58,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 	const [paymentAPIError, setPaymentAPIError] = useState<Error | null>(null);
 	const [bkashButtonError, setBkashButtonError] = useState<Error | null>(null);
 
+	//create a hidden button on dom with bkash button id
 	const createBkashButton = useCallback(() => {
 		const button = document.createElement('button');
 		button.style.display = 'none';
@@ -69,15 +70,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 		}
 	}, []);
 
-	// Load dependencies & setup bkash
-	const { loading, data, error } = useAsync(async () => {
-		createBkashButton();
-
-		await loadDependencies(config.bkashScriptURL);
-		initBkash();
-		return true;
-	});
-
+	//click on bkash button
 	const triggerBkash = useCallback((): void => {
 		const createdButton = document.getElementById(BKASH_BUTTON_ID) as HTMLButtonElement;
 		if (createdButton) {
@@ -88,6 +81,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 		setBkashButtonError(new Error('Could not find bkash button on document'));
 	}, []);
 
+	//bkash iframe config
 	const initBkash = useCallback(() => {
 		const { amount } = config;
 		const bkashConfig: BkashConfig = {
@@ -163,6 +157,21 @@ export const BkashButton: FC<BkashButtonProps> = ({
 			window.bKash.init(bkashConfig);
 		}
 	}, [config, onClose, onSuccess, paymentID]);
+
+	// Load dependencies & setup bkash
+	const initFunction = useCallback(async () => {
+		if (debug) {
+			console.log('[bKash] Initializing bKash');
+		}
+
+		createBkashButton();
+
+		await loadDependencies(config.bkashScriptURL);
+		initBkash();
+		return true;
+	}, [config.bkashScriptURL, createBkashButton, debug, initBkash]);
+
+	const { loading, data, error } = useAsync(initFunction);
 
 	/**
 	 * Handler that clicks bkash button and also calls children's onClick handler if it exists
