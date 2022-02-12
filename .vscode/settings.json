@@ -5,7 +5,7 @@
 			"source.organizeImports": true
 		}
 	},
-	"[typescript-react]": {
+	"[typescriptreact]": {
 		"editor.codeActionsOnSave": {
 			"source.fixAll": true,
 			"source.organizeImports": true
