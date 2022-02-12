@@ -14,17 +14,17 @@ export const useIsMounted = (): React.MutableRefObject<boolean> => {
 	return isMounted;
 };
 
-type AnyPromiseFunction = () => Promise<any>;
+type AnyPromiseFunction = (...args: any[]) => Promise<any>;
 
-type Awaited<T extends AnyPromiseFunction> = T extends (...args: any[]) => Promise<infer U> ? U : never;
+type Awaited<T extends AnyPromiseFunction> = T extends () => Promise<infer U> ? U : never;
 
 type UseAsyncReturnType<T extends AnyPromiseFunction> = {
 	loading: boolean;
 	error: Error | null;
 	data: Awaited<T> | null;
-	reloadData: () => void;
+	call: (...args: Parameters<T>) => void;
 };
-export const useAsync = <T extends AnyPromiseFunction>(cb: T): UseAsyncReturnType<T> => {
+export const useAsync = <T extends AnyPromiseFunction>(cb: T, delayCall = false): UseAsyncReturnType<T> => {
 	const [data, setData] = useState<Awaited<T> | null>(null);
 	const [loading, setLoading] = useState<true | false>(false);
 	const [error, setError] = useState<Error | null>(null);
@@ -34,25 +34,31 @@ export const useAsync = <T extends AnyPromiseFunction>(cb: T): UseAsyncReturnTyp
 
 	const isMounted = useIsMounted();
 
-	const fetchData = useCallback(async () => {
-		setLoading(true);
-		try {
-			const result = await cbRef.current();
-			if (!isMounted.current) return;
-			setData(result);
-		} catch (error) {
-			if (!isMounted.current) return;
-			if (error instanceof Error) {
-				setError(error);
-				return;
+	const fetchData = useCallback(
+		async (...args: any[]) => {
+			setLoading(true);
+			try {
+				const result = await cbRef.current(args);
+				if (!isMounted.current) return;
+
+				setData(result);
+			} catch (error) {
+				if (!isMounted.current) return;
+
+				if (error instanceof Error) {
+					setError(error);
+					return;
+				}
+
+				setError(new Error((error as Error)?.message || 'Unknown error'));
+			} finally {
+				if (isMounted.current) {
+					setLoading(false);
+				}
 			}
-			setError(new Error((error as Error)?.message || 'Unknown error'));
-		} finally {
-			if (isMounted.current) {
-				setLoading(false);
-			}
-		}
-	}, [isMounted]);
+		},
+		[isMounted]
+	);
 
 	const fetchDataRef = useRef(fetchData);
 
@@ -61,8 +67,10 @@ export const useAsync = <T extends AnyPromiseFunction>(cb: T): UseAsyncReturnTyp
 	}, [fetchData]);
 
 	useEffect(() => {
-		fetchDataRef.current();
-	}, []);
+		if (!delayCall) {
+			fetchDataRef.current();
+		}
+	}, [delayCall]);
 
-	return { loading, data, error, reloadData: fetchData };
+	return { loading, data, error, call: fetchData };
 };
