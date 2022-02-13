@@ -184,6 +184,6 @@ If you don't have a backend, you can use the following library to create a backe
 
 ### Contributors
 
-[Sonjoy Datta](https://github.com/sonjoydatta) 
+[Sonjoy Datta](https://github.com/sonjoydatta)
 
 [Enamul](https://github.com/Alpha-T30)
