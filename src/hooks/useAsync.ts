@@ -35,14 +35,14 @@ export const useAsync = <T extends AnyPromiseFunction>(
 	const [error, setError] = useState<Error | null>(null);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const callBack = useCallback((args: any[]) => cb(args), [...deps, cb]);
+	const callBack = useCallback((...args: any[]) => cb(...args), [...deps, cb]);
 	const isMountedRef = useIsMounted();
 
 	const fetchData = useCallback(
 		async (...args: any[]) => {
 			setLoading(true);
 			try {
-				const result = await callBack(args);
+				const result = await callBack(...args);
 				if (!isMountedRef.current) return;
 
 				setData(result);
