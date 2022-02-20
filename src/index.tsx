@@ -6,6 +6,7 @@ import React, {
 	ReactElement,
 	ReactNode,
 	useCallback,
+	useRef,
 	useState,
 } from 'react';
 import { BkashConfig } from './bkash';
@@ -53,10 +54,10 @@ export const BkashButton: FC<BkashButtonProps> = ({
 	renderError,
 	debug = false,
 }): JSX.Element | null => {
-	const [paymentID, setPaymentID] = useState('');
 	const [bkashNotfoundError, setBkashNotFoundError] = useState(false);
 	const [paymentAPIError, setPaymentAPIError] = useState<Error | null>(null);
 	const [bkashButtonError, setBkashButtonError] = useState<Error | null>(null);
+	const paymentID = useRef<string | null>(null);
 
 	//create a hidden button on dom with bkash button id
 	const createBkashButton = useCallback(() => {
@@ -96,7 +97,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 				if (!isDefaultConfig(config)) {
 					try {
 						const result = await config.onCreatePayment(request);
-						setPaymentID(result.paymentID);
+						paymentID.current = result.paymentID;
 						window.bKash.create().onSuccess(result);
 					} catch (error) {
 						setPaymentAPIError(error);
@@ -115,34 +116,36 @@ export const BkashButton: FC<BkashButtonProps> = ({
 					setPaymentAPIError(result.error);
 					return;
 				}
-				setPaymentID(result.data.paymentID);
+				paymentID.current = result.data.paymentID;
 				window.bKash.create().onSuccess(result.data);
 			},
 
 			executeRequestOnAuthorization: async () => {
-				if (!isDefaultConfig(config)) {
-					try {
-						const result = await config.onExecutePayment(paymentID);
-						onSuccess(result);
-					} catch (error) {
-						setPaymentAPIError(error);
-						window.bKash.execute().onError();
+				if (paymentID.current) {
+					if (!isDefaultConfig(config)) {
+						try {
+							const result = await config.onExecutePayment(paymentID.current);
+							onSuccess(result);
+						} catch (error) {
+							setPaymentAPIError(error);
+							window.bKash.execute().onError();
+						}
+						return;
 					}
-					return;
-				}
 
-				const result = await post<ExecutePaymentResponse>(
-					config.executePaymentURL,
-					{ paymentID },
-					config.additionalHeaders || {}
-				);
+					const result = await post<ExecutePaymentResponse>(
+						config.executePaymentURL,
+						{ paymentID: paymentID.current },
+						config.additionalHeaders || {}
+					);
 
-				if (result.error !== null) {
-					setPaymentAPIError(result.error);
-					window.bKash.execute().onError();
-					return;
+					if (result.error !== null) {
+						setPaymentAPIError(result.error);
+						window.bKash.execute().onError();
+						return;
+					}
+					onSuccess(result.data);
 				}
-				onSuccess(result.data);
 			},
 
 			onClose: () => onClose(),
@@ -156,7 +159,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 		if (window.bKash) {
 			window.bKash.init(bkashConfig);
 		}
-	}, [config, onClose, onSuccess, paymentID]);
+	}, [config, onClose, onSuccess]);
 
 	// Load dependencies & setup bkash
 	const initFunction = useCallback(async () => {
