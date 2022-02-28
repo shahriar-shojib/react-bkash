@@ -9,7 +9,7 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { BkashConfig } from './bkash';
+import { BkashConfig, BkashScript } from './bkash.types';
 import { useAsync } from './hooks/useAsync';
 import {
 	BkashComponentConfig,
@@ -20,6 +20,8 @@ import {
 	loadDependencies,
 	post,
 } from './utils';
+
+declare const bKash: BkashScript;
 
 export type BkashButtonProps = {
 	onSuccess: BkashSuccessFunction;
@@ -98,10 +100,10 @@ export const BkashButton: FC<BkashButtonProps> = ({
 					try {
 						const result = await config.onCreatePayment(request);
 						paymentID.current = result.paymentID;
-						window.bKash.create().onSuccess(result);
+						bKash.create().onSuccess(result);
 					} catch (error) {
 						setPaymentAPIError(error);
-						window.bKash.create().onError();
+						bKash.create().onError();
 					}
 					return;
 				}
@@ -112,12 +114,12 @@ export const BkashButton: FC<BkashButtonProps> = ({
 					config.additionalHeaders || {}
 				);
 				if (result.error !== null) {
-					window.bKash.create().onError();
+					bKash.create().onError();
 					setPaymentAPIError(result.error);
 					return;
 				}
 				paymentID.current = result.data.paymentID;
-				window.bKash.create().onSuccess(result.data);
+				bKash.create().onSuccess(result.data);
 			},
 
 			executeRequestOnAuthorization: async () => {
@@ -128,7 +130,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 							onSuccess(result);
 						} catch (error) {
 							setPaymentAPIError(error);
-							window.bKash.execute().onError();
+							bKash.execute().onError();
 						}
 						return;
 					}
@@ -141,7 +143,7 @@ export const BkashButton: FC<BkashButtonProps> = ({
 
 					if (result.error !== null) {
 						setPaymentAPIError(result.error);
-						window.bKash.execute().onError();
+						bKash.execute().onError();
 						return;
 					}
 					onSuccess(result.data);
@@ -151,14 +153,12 @@ export const BkashButton: FC<BkashButtonProps> = ({
 			onClose: () => onClose(),
 		};
 
-		if (!window.bKash) {
+		if (typeof bKash === 'undefined') {
 			setBkashNotFoundError(true);
 			return;
 		}
 
-		if (window.bKash) {
-			window.bKash.init(bkashConfig);
-		}
+		bKash.init(bkashConfig);
 	}, [config, onClose, onSuccess]);
 
 	// Load dependencies & setup bkash

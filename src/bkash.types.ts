@@ -1,6 +1,6 @@
 import { ICreatePaymentResponse, IPaymentRequest } from './utils';
 
-type BkashConfig = {
+export type BkashConfig = {
 	paymentMode: string;
 	paymentRequest: {
 		amount: string;
@@ -12,15 +12,10 @@ type BkashConfig = {
 	onClose: () => void;
 };
 
-interface BkashScript {
+export interface BkashScript {
 	init(config: BkashConfig): void;
 	create(): BkashScript;
 	execute(): BkashScript;
 	onSuccess(data: ICreatePaymentResponse): void;
 	onError(): void;
-}
-declare global {
-	interface Window {
-		bKash: BkashScript;
-	}
 }
