@@ -41,12 +41,5 @@
 		"bkash",
 		"bkash-pgw",
 		"bkash-react"
-	],
-	"type": "module",
-	"exports": {
-		".": {
-			"default": "./dist/index.js",
-			"import": "./dist/index.js"
-		}
-	}
+	]
 }
