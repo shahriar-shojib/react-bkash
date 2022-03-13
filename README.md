@@ -32,7 +32,7 @@ const buttonStyle: CSSProperties = {
 export const Example: FC = () => {
 	const config: BkashComponentConfig = {
 		amount: 100, //can be string as well, max 2 digit decimal point
-		bkashScriptURL: '<bkash script url provided to merchant by bkash>',
+		bkashScriptURL: '<bkash script url provided to merchant by bkash>', //https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
 		createPaymentURL: '<your backend api url for creating payment>',
 		executePaymentURL: '<your backend api url for executing payment>',
 		additionalHeaders: {}, // if you need to send any authorization headers to backend
@@ -89,7 +89,7 @@ const buttonStyle: CSSProperties = {
 export const Example: FC = () => {
 	const config: BkashComponentConfig = {
 		amount: 100, //can be string as well, max 2 digit decimal point
-		bkashScriptURL: '<bkash script url provided to merchant by bkash>',
+		bkashScriptURL: '<bkash script url provided to merchant by bkash>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
 		onCreatePayment: async (request) => {
 			// do something with request
 			// you have to throw error here if your backend request was not successful
