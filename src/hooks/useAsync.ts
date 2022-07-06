@@ -1,80 +1,94 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { DependencyList, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const useIsMounted = (): React.MutableRefObject<boolean> => {
-	const isMounted = useRef(true);
+export const useSafeSetState = () => {
+	const isMounted = useRef(false);
 
-	useEffect(
-		() => () => {
+	useEffect(() => {
+		isMounted.current = true;
+		return () => {
 			isMounted.current = false;
-		},
-		[]
-	);
+		};
+	}, []);
 
-	return isMounted;
+	return useCallback((fn: AnyFunction) => {
+		if (isMounted.current) {
+			fn();
+		}
+	}, []);
 };
 
-type AnyPromiseFunction = (...args: any[]) => Promise<any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyAsyncFunction = (...args: any[]) => Promise<any>;
 
-type Awaited<T extends AnyPromiseFunction> = T extends () => Promise<infer U> ? U : never;
+type UseAsyncParams<AsyncFN extends AnyAsyncFunction> = {
+	fn: AsyncFN;
+	runAtStart?: boolean;
+};
 
-type UseAsyncReturnType<T extends AnyPromiseFunction> = {
+type AnyFunction = () => void;
+
+type UseAsyncReturnType<AsyncFN extends AnyAsyncFunction> = {
 	loading: boolean;
+	value: Awaited<ReturnType<AsyncFN>> | null;
 	error: Error | null;
-	data: Awaited<T> | null;
-	call: (...args: Parameters<T>) => void;
+	callAgain: (...params: Parameters<AsyncFN>) => void;
 };
 
-export const useAsync = <T extends AnyPromiseFunction>(
-	cb: T,
-	deps: DependencyList = [],
-	delayCall = false
-): UseAsyncReturnType<T> => {
-	const [data, setData] = useState<Awaited<T> | null>(null);
-	const [loading, setLoading] = useState<true | false>(false);
+export const useAsync = <AsyncFn extends AnyAsyncFunction>(
+	args: UseAsyncParams<AsyncFn>,
+	...params: Parameters<AsyncFn>
+): UseAsyncReturnType<AsyncFn> => {
+	const { fn, runAtStart = true } = args;
+
+	const setStateSafe = useSafeSetState();
+	const [loading, setLoading] = useState(runAtStart);
+	const [value, setValue] = useState<Awaited<ReturnType<AsyncFn>> | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const callBack = useCallback((...args: any[]) => cb(...args), [...deps, cb]);
-	const isMountedRef = useIsMounted();
+	const runFn = useCallback(
+		async (...newParams: Parameters<AsyncFn> | []) => {
+			const paramsToSpread = newParams.length ? newParams : params;
 
-	const fetchData = useCallback(
-		async (...args: any[]) => {
-			setLoading(true);
 			try {
-				const result = await callBack(...args);
-				if (!isMountedRef.current) return;
+				setStateSafe(() => {
+					setLoading(true);
+				});
+				const result = await fn(...paramsToSpread);
 
-				setData(result);
+				setStateSafe(() => {
+					setValue(result);
+				});
 			} catch (error) {
-				if (!isMountedRef.current) return;
-
-				if (error instanceof Error) {
-					setError(error);
-					return;
-				}
-
-				setError(new Error((error as Error)?.message || 'Unknown error'));
+				setStateSafe(() => {
+					setError(error as Error);
+				});
 			} finally {
-				if (isMountedRef.current) {
+				setStateSafe(() => {
 					setLoading(false);
-				}
+				});
 			}
 		},
-		[callBack, isMountedRef]
+		[fn, params, setStateSafe]
 	);
 
-	const fetchDataRef = useRef(fetchData);
+	const runFnRef = useRef(runFn);
 
 	useEffect(() => {
-		fetchDataRef.current = fetchData;
-	}, [fetchData]);
+		runFnRef.current = runFn;
+	}, [runFn]);
 
 	useEffect(() => {
-		if (!delayCall) {
-			fetchDataRef.current();
+		if (runAtStart) {
+			runFnRef.current();
 		}
-	}, [delayCall]);
+	}, [runAtStart]);
 
-	return { loading, data, error, call: fetchData };
+	return {
+		loading,
+		value,
+		error,
+		callAgain: useCallback((...params: Parameters<AsyncFn>) => {
+			runFnRef.current(...params);
+		}, []),
+	};
 };
