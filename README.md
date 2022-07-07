@@ -17,31 +17,29 @@ import { FC } from 'react';
 import { useBkash } from 'react-bkash';
 
 export const Checkout: FC = () => {
-  const { error, loading, triggerBkash } = useBkash({
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onClose: () => {
-      console.log('Bkash iFrame closed');
-    },
-    bkashScriptURL: '<BKASH SCRIPT URL PROVIDED TO MERCHANT BY BKASH>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
-    amount: 1000,
-    onCreatePayment: (paymentRequest: IPaymentRequest) => {
-      console.log(paymentRequest);
-    },
-    onExecutePayment: (paymentID: string) => {
-      console.log(paymentID);
-    }
-  });
+	const { error, loading, triggerBkash } = useBkash({
+		onSuccess: (data) => {
+			console.log(data);
+		},
+		onClose: () => {
+			console.log('Bkash iFrame closed');
+		},
+		bkashScriptURL: '<BKASH SCRIPT URL PROVIDED TO MERCHANT BY BKASH>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
+		amount: 1000,
+		onCreatePayment: (paymentRequest: IPaymentRequest) => {
+			console.log(paymentRequest);
+		},
+		onExecutePayment: (paymentID: string) => {
+			console.log(paymentID);
+		},
+	});
 
-  return (
-    <div>
-      <button onClick={triggerBkash}>
-        Pay with bKash
-      </button>
-    </div>
-  );
-}
+	return (
+		<div>
+			<button onClick={triggerBkash}>Pay with bKash</button>
+		</div>
+	);
+};
 ```
 
 ---
