@@ -17,17 +17,27 @@
 		"check:format": "prettier -c .",
 		"check:lint": "eslint .",
 		"format": "prettier -c -w .",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"test": "jest"
 	},
 	"devDependencies": {
+		"@swc/core": "^1.2.210",
+		"@swc/jest": "^0.2.21",
+		"@testing-library/jest-dom": "^5.16.4",
+		"@testing-library/react": "^13.3.0",
+		"@testing-library/react-hooks": "^8.0.1",
+		"@types/jest": "^28.1.4",
 		"@types/react": "^18.0.15",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",
 		"eslint": "^8.19.0",
 		"eslint-plugin-react": "^7.30.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
+		"jest": "^28.1.2",
+		"jest-environment-jsdom": "^28.1.2",
 		"prettier": "^2.7.1",
 		"react": "^18.2.0",
+		"react-test-renderer": "^18.2.0",
 		"typescript": "^4.7.4"
 	},
 	"files": [
@@ -40,5 +50,33 @@
 		"bkash",
 		"bkash-pgw",
 		"bkash-react"
-	]
+	],
+	"jest": {
+		"transform": {
+			"^.+\\.(t|j)sx?$": [
+				"@swc/jest",
+				{
+					"jsc": {
+						"parser": {
+							"syntax": "typescript",
+							"tsx": true
+						},
+						"transform": {
+							"react": {
+								"runtime": "automatic"
+							}
+						}
+					},
+					"module": {
+						"type": "commonjs"
+					}
+				}
+			]
+		},
+		"testRegex": "src/__tests__/.*\\.spec\\.ts?$",
+		"testEnvironment": "jsdom"
+	},
+	"dependencies": {
+		"react-dom": "^18.2.0"
+	}
 }
