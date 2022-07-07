@@ -10,27 +10,48 @@ React component for accepting bkash payments! [painlessly]
 
 - Run `npm install react-bkash`
 
-- open your react component and add the following code `TypeScript`
+- open your react component and add the following code
 
-```tsx
-import { FC } from 'react';
+```jsx
 import { useBkash } from 'react-bkash';
 
-export const Checkout: FC = () => {
+export const Checkout = () => {
 	const { error, loading, triggerBkash } = useBkash({
 		onSuccess: (data) => {
-			console.log(data);
+			console.log(data); // this contains data from api response from onExecutePayment
 		},
 		onClose: () => {
 			console.log('Bkash iFrame closed');
 		},
 		bkashScriptURL: '<BKASH SCRIPT URL PROVIDED TO MERCHANT BY BKASH>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
 		amount: 1000,
-		onCreatePayment: (paymentRequest: IPaymentRequest) => {
-			console.log(paymentRequest);
+		onCreatePayment: async (paymentRequest) => {
+			// call your API with the payment request here
+			return await fetch('<your backend api>/create/', {
+				method: 'POST',
+				body: JSON.stringify(paymentRequest),
+			}).then((res) => res.json());
+
+			// must return the following object:
+			// {
+			// 	paymentID: string;
+			// 	createTime: string;
+			// 	orgLogo: string;
+			// 	orgName: string;
+			// 	transactionStatus: string;
+			// 	amount: string;
+			// 	currency: string;
+			// 	intent: string;
+			// 	merchantInvoiceNumber: string;
+			// }
 		},
-		onExecutePayment: (paymentID: string) => {
-			console.log(paymentID);
+		onExecutePayment: async (paymentID) => {
+			// call your executePayment API here
+			return await fetch('<your backend api>/execute/${paymentID}', {
+				method: 'POST',
+			}).then((res) => res.json());
+
+			// it doesn't matter what you return here, any errors thrown here will be available on error return value of the useBkash hook
 		},
 	});
 
