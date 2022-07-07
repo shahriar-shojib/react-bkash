@@ -10,146 +10,56 @@ React component for accepting bkash payments! [painlessly]
 
 - Run `npm install react-bkash`
 
-- open your react component and add the following code `TypeScript`
+- open your react component and add the following code
 
-```tsx
-import React, { useCallback, CSSProperties, FC } from 'react';
-import { BkashButton, BkashComponentConfig, BkashSuccessFunction } from 'react-bkash';
+```jsx
+import { useBkash } from 'react-bkash';
 
-const buttonStyle: CSSProperties = {
- minWidth: '170px',
- height: '38px',
- fontSize: '0.875rem',
- fontWeight: 500,
- lineHeight: 1.5,
- color: '#fff',
- padding: '0.375rem 0.75rem',
- textTransform: 'uppercase',
- backgroundColor: '#e2136e',
- border: '1px solid #e2136e',
-};
+export const Checkout = () => {
+	const { error, loading, triggerBkash } = useBkash({
+		onSuccess: (data) => {
+			console.log(data); // this contains data from api response from onExecutePayment
+		},
+		onClose: () => {
+			console.log('Bkash iFrame closed');
+		},
+		bkashScriptURL: '<BKASH SCRIPT URL PROVIDED TO MERCHANT BY BKASH>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
+		amount: 1000,
+		onCreatePayment: async (paymentRequest) => {
+			// call your API with the payment request here
+			return await fetch('<your backend api>/create/', {
+				method: 'POST',
+				body: JSON.stringify(paymentRequest),
+			}).then((res) => res.json());
 
-export const Example: FC = () => {
- const config: BkashComponentConfig = {
-  amount: 100, //can be string as well, max 2 digit decimal point
-  bkashScriptURL: '<bkash script url provided to merchant by bkash>', //https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
-  createPaymentURL: '<your backend api url for creating payment>',
-  executePaymentURL: '<your backend api url for executing payment>',
-  additionalHeaders: {}, // if you need to send any authorization headers to backend
- };
+			// must return the following object:
+			// {
+			// 	paymentID: string;
+			// 	createTime: string;
+			// 	orgLogo: string;
+			// 	orgName: string;
+			// 	transactionStatus: string;
+			// 	amount: string;
+			// 	currency: string;
+			// 	intent: string;
+			// 	merchantInvoiceNumber: string;
+			// }
+		},
+		onExecutePayment: async (paymentID) => {
+			// call your executePayment API here
+			return await fetch('<your backend api>/execute/${paymentID}', {
+				method: 'POST',
+			}).then((res) => res.json());
 
- const onSuccess: BkashSuccessFunction = useCallback((data) => {
-  console.log(data.amount);
-  console.log(data.createTime);
-  console.log(data.merchantInvoiceNumber);
-  console.log(data.transactionStatus);
-  console.log(data.trxID);
- }, []);
+			// it doesn't matter what you return here, any errors thrown here will be available on error return value of the useBkash hook
+		},
+	});
 
- const onClose = useCallback(() => {
-  console.log('Bkash iFrame closed');
- }, []);
-
- return (
-  <BkashButton
-   config={config}
-   onClose={onClose}
-   onSuccess={onSuccess}
-   loader={<p>loading...</p>} //optional
-   renderError={(error) => <p>{error.message}</p>} //optional
-   debug={true}>
-   {/* This is the button that will be rendered on your component */}
-   <button style={buttonStyle}>Pay with Bkash</button>
-  </BkashButton>
- );
-};
-```
-
-# Advance usage
-
-If you have a custom API implementation, you can use the following code to create a payment
-
-```tsx
-import React, { useCallback, CSSProperties, FC } from 'react';
-import { BkashButton, BkashComponentConfig, BkashSuccessFunction } from 'react-bkash';
-
-const buttonStyle: CSSProperties = {
- minWidth: '170px',
- height: '38px',
- fontSize: '0.875rem',
- fontWeight: 500,
- lineHeight: 1.5,
- color: '#fff',
- padding: '0.375rem 0.75rem',
- textTransform: 'uppercase',
- backgroundColor: '#e2136e',
- border: '1px solid #e2136e',
-};
-
-export const Example: FC = () => {
- const config: BkashComponentConfig = {
-  amount: 100, //can be string as well, max 2 digit decimal point
-  bkashScriptURL: '<bkash script url provided to merchant by bkash>', // https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js
-  onCreatePayment: async (request) => {
-   // do something with request
-   // you have to throw error here if your backend request was not successful
-   // must return the following response
-   // {
-   //  paymentID: string;
-   //  createTime: string;
-   //  orgLogo: string;
-   //  orgName: string;
-   //  transactionStatus: string;
-   //  amount: string;
-   //  currency: string;
-   //  intent: string;
-   //  merchantInvoiceNumber: string;
-   // }
-  },
-  //paymentID is string and will be needed by your backend API
-  onExecutePayment: async (paymentID) => {
-   //call the backend api with the paymentID
-   //must return the following response
-   // you have to throw error here if your backend request was not successful
-   // must return the following object
-   // {
-   //  paymentID: string;
-   //  createTime: string;
-   //  updateTime: string;
-   //  trxID: string;
-   //  transactionStatus: string;
-   //  amount: string;
-   //  currency: string;
-   //  intent: string;
-   //  merchantInvoiceNumber: string;
-   // }
-  },
- };
-
- const onSuccess: BkashSuccessFunction = useCallback((data) => {
-  console.log(data.amount);
-  console.log(data.createTime);
-  console.log(data.merchantInvoiceNumber);
-  console.log(data.transactionStatus);
-  console.log(data.trxID);
- }, []);
-
- const onClose = useCallback(() => {
-  console.log('Bkash iFrame closed');
- }, []);
-
- return (
-  <BkashButton
-   config={config}
-   onClose={onClose}
-   onSuccess={onSuccess}
-   loader={<p>loading...</p>} //optional
-   renderError={(error) => <p>{error.message}</p>} //optional
-   debug={true}>
-   {/* This is the button that will be rendered on your component */}
-   <button style={buttonStyle}>Pay with Bkash</button>
-  </BkashButton>
- );
+	return (
+		<div>
+			<button onClick={triggerBkash}>Pay with bKash</button>
+		</div>
+	);
 };
 ```
 
