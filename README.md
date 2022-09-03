@@ -54,6 +54,14 @@ export const Checkout = () => {
 			// it doesn't matter what you return here, any errors thrown here will be available on error return value of the useBkash hook
 		},
 	});
+	
+	if (loading) {
+	    return <h1>loading</h1>;
+	}
+	
+	if (error) {
+	    return <h1>{error.message}</h1>;
+	}
 
 	return (
 		<div>
